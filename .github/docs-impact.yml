@@ -1,0 +1,27 @@
+version: 1
+rules:
+  - id: production-docs
+    description: Production source changes require user or architecture documentation.
+    if_changed:
+      - src/**
+    require_any:
+      - docs/USAGE.md
+      - docs/ARCHITECTURE.md
+    decision: docs
+    min_reason_length: 15
+  - id: release-note
+    description: Production source changes require an explicit changelog decision.
+    if_changed:
+      - src/**
+    require_any:
+      - CHANGELOG.md
+    decision: changelog
+    min_reason_length: 15
+  - id: version-decision
+    description: Production source changes require an explicit package-version decision.
+    if_changed:
+      - src/**
+    require_any:
+      - package.json
+    decision: version
+    min_reason_length: 15

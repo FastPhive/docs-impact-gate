@@ -1,0 +1,28 @@
+name: Docs Impact Gate
+description: Enforce explicit documentation, changelog, and version decisions on pull requests.
+author: Docs Impact Gate
+
+inputs:
+  github-token:
+    description: Read-only GitHub token used to list pull-request filenames.
+    required: true
+  policy-file:
+    description: Repository-relative path to the Docs Impact Gate policy.
+    required: false
+    default: .github/docs-impact.yml
+
+outputs:
+  result:
+    description: Evaluation result, either pass or fail.
+  violations-count:
+    description: Number of policy violations found.
+  report:
+    description: Deterministic Markdown evaluation report.
+
+runs:
+  using: node24
+  main: dist/index.js
+
+branding:
+  icon: file-text
+  color: blue

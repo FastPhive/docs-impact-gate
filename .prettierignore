@@ -1,0 +1,7 @@
+agents.md
+docs/
+dist/
+node_modules/
+coverage/
+package-lock.json
+.superpowers/

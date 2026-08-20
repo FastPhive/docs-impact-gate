@@ -1,0 +1,9 @@
+version: 1
+rules:
+  - id: user-docs
+    description: UI changes require user documentation.
+    if_changed:
+      - src/ui/**
+    require_any:
+      - docs/USAGE.md
+    decision: docs

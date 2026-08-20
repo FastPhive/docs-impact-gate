@@ -1,0 +1,17 @@
+version: 1
+rules:
+  - id: duplicate-rule
+    description: First invalid rule.
+    if_changed:
+      - src/**
+    require_any:
+      - docs/USAGE.md
+    decision: docs
+    unsupported: true
+  - id: duplicate-rule
+    description: Second invalid rule.
+    if_changed:
+      - src/**
+    require_any:
+      - docs/ARCHITECTURE.md
+    decision: docs
