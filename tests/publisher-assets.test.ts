@@ -46,7 +46,7 @@ test('publisher CI uses read-only permissions and immutable action pins', () => 
   );
 });
 
-test('demo workflow grants only required reads and keeps the product pin explicit', () => {
+test('demo workflow is directly runnable with the immutable v0.2.0 release pin', () => {
   const workflow = readYaml('marketing/demo-workflow.yml');
 
   assert.deepEqual(workflow.permissions, {
@@ -63,7 +63,10 @@ test('demo workflow grants only required reads and keeps the product pin explici
     steps[0]?.uses,
     'actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1',
   );
-  assert.equal(steps[1]?.uses, '<publisher>/<repository>@<full-commit-sha>');
+  assert.equal(
+    steps[1]?.uses,
+    'FastPhive/docs-impact-gate@6683d10b1aa4768e433bc5ba2498f1f0b9477c70',
+  );
 });
 
 test('publisher CI dogfoods the released action in audit mode with minimal reads', () => {

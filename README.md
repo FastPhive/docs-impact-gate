@@ -51,8 +51,8 @@ rules:
     min_reason_length: 15
 ```
 
-Add a `pull_request` workflow after replacing the placeholders with the
-publisher repository and verified immutable commit:
+Add this copy-ready `pull_request` workflow. Both third-party Actions are
+pinned to verified immutable commits:
 
 ```yaml
 name: Docs Impact Gate
@@ -71,7 +71,7 @@ jobs:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           persist-credentials: false
-      - uses: FastPhive/docs-impact-gate@<full-commit-sha>
+      - uses: FastPhive/docs-impact-gate@6683d10b1aa4768e433bc5ba2498f1f0b9477c70 # v0.2.0
         with:
           github-token: ${{ github.token }}
           policy-file: .github/docs-impact.yml
