@@ -24,6 +24,15 @@ uploading source code or full diffs to a vendor service.
 - Omits decision reasons, source patches, and raw pull-request bodies from
   reports.
 
+## Join the audit pilot
+
+Try `enforcement: audit` on real pull requests without blocking merges, then
+[share opt-in pilot feedback](https://github.com/FastPhive/docs-impact-gate/issues/new?template=audit-pilot.yml).
+The form asks for aggregate feedback without separate contact details; a
+repository reference is optional and must be public or explicitly authorized
+for disclosure. Never include secrets, private repository content, personal
+contact details, or vulnerability reports.
+
 ## Usage
 
 Add `.github/docs-impact.yml`:

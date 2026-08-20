@@ -4,6 +4,11 @@ All notable changes to Docs Impact Gate will be recorded in this file.
 
 ## [Unreleased]
 
+### Added
+
+- Read-only self-dogfood checks in audit mode for publisher pull requests.
+- A privacy-safe, opt-in GitHub Issue Form for audit-pilot feedback.
+
 ## [0.2.0] - 2026-08-20
 
 ### Added
