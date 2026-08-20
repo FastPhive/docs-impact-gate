@@ -15,6 +15,8 @@ All notable changes to Docs Impact Gate will be recorded in this file.
   commit pin directly instead of unresolved publisher and SHA placeholders.
 - The Marketplace README now shows a renderer-synchronized audit report and
   links to the three publisher-owned public demo scenarios.
+- The audit-pilot call to action now links to a pinned, transparent 0/3 cohort
+  tracker while keeping publisher self-checks separate from external adoption.
 
 ## [0.2.0] - 2026-08-20
 

@@ -56,8 +56,12 @@ These scenarios verify behavior; they are not evidence of external adoption.
 
 ## Join the audit pilot
 
-Try `enforcement: audit` on real pull requests without blocking merges, then
+The first cohort currently has **0/3 confirmed external repositories**. Follow
+the [pinned pilot tracker](https://github.com/FastPhive/docs-impact-gate/issues/4)
+for transparent progress. Try `enforcement: audit` on real pull requests without
+blocking merges, then
 [share opt-in pilot feedback](https://github.com/FastPhive/docs-impact-gate/issues/new?template=audit-pilot.yml).
+Publisher-owned demos and self-checks are not counted as external adoption.
 The form asks for aggregate feedback without separate contact details; a
 repository reference is optional and must be public or explicitly authorized
 for disclosure. Never include secrets, private repository content, personal

@@ -155,6 +155,39 @@ test('audit pilot intake keeps repository disclosure optional and requires autho
   assert.match(String(options[0]?.label), /authorized|permission/iu);
 });
 
+test('Marketplace pilot CTA links the pinned zero-adoption tracker safely', () => {
+  const readme = readFileSync('README.md', 'utf8');
+  const pilotSection = readme.match(
+    /## Join the audit pilot\n([\s\S]*?)(?=\n## )/u,
+  );
+
+  assert.ok(pilotSection, 'expected the Marketplace audit-pilot section');
+  const pilotCopySource = pilotSection[1];
+  assert.ok(pilotCopySource, 'expected audit-pilot copy below the heading');
+  const pilotCopy = pilotCopySource.replace(/\s+/gu, ' ').trim();
+  assert.match(
+    pilotCopy,
+    /\]\(https:\/\/github\.com\/FastPhive\/docs-impact-gate\/issues\/4\)/u,
+  );
+  assert.match(
+    pilotCopy,
+    /\]\(https:\/\/github\.com\/FastPhive\/docs-impact-gate\/issues\/new\?template=audit-pilot\.yml\)/u,
+  );
+  assert.match(pilotCopy, /\*\*0\/3 confirmed external repositories\*\*/iu);
+  assert.match(
+    pilotCopy,
+    /publisher(?:-owned)? demos and self-checks are not counted as external adoption\./iu,
+  );
+  assert.match(
+    pilotCopy,
+    /never include secrets, private repository content, personal contact details, or vulnerability reports/iu,
+  );
+  assert.doesNotMatch(
+    pilotCopy,
+    /https:\/\/github\.com\/(?:openremote|navidrome)\//iu,
+  );
+});
+
 test('publisher root contains exactly one action metadata file', () => {
   const metadataFiles = readdirSync('.').filter((name) =>
     /^action\.ya?ml$/u.test(name),
