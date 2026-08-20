@@ -1,7 +1,7 @@
 # Docs Impact Gate
 
-> v0.1.0 is published in the GitHub Marketplace and validated with a public
-> demo repository.
+> `v0.2.0` is the current GitHub Marketplace release. It adds an audit-first
+> rollout mode to the deterministic blocking behavior introduced in `v0.1.0`.
 
 Docs Impact Gate requires an explicit documentation, changelog, and version
 decision when relevant files change in a pull request. It uses repository-owned
@@ -18,6 +18,8 @@ uploading source code or full diffs to a vendor service.
 - Matches changed filenames against strict version-1 YAML rules.
 - Accepts a matching documentation/release file or a detailed explicit reason.
 - Produces a deterministic Action Summary with repair guidance.
+- Supports an audit-first rollout that reports violations without blocking the
+  workflow step; `block` remains the default.
 - Reads only pull-request metadata and changed filenames.
 - Omits decision reasons, source patches, and raw pull-request bodies from
   reports.
@@ -64,6 +66,7 @@ jobs:
         with:
           github-token: ${{ github.token }}
           policy-file: .github/docs-impact.yml
+          enforcement: audit
 ```
 
 If no required file changes, include exactly one block in the pull-request
@@ -82,6 +85,8 @@ Inputs:
 - `github-token` — required read-only token for changed filenames.
 - `policy-file` — optional repository-relative path; defaults to
   `.github/docs-impact.yml`.
+- `enforcement` — optional `audit` or `block`; defaults to `block`. Use `audit`
+  while calibrating a new repository policy.
 
 Outputs:
 
@@ -100,7 +105,7 @@ npm audit --audit-level=high
 ```
 
 The check builds the committed Action bundle before running unit,
-orchestration, and packaged-action end-to-end tests.
+orchestration, and three packaged-action end-to-end scenarios.
 
 ## Security and privacy
 
@@ -110,8 +115,11 @@ Do not use `pull_request_target`. See [Security](docs/SECURITY.md),
 
 ## Current limits
 
-- Marketplace listing: https://github.com/marketplace/actions/docs-impact-gate
-- Public demo scenarios are verified in the linked publisher and demo repositories.
+- [Marketplace listing](https://github.com/marketplace/actions/docs-impact-gate)
+- Public releases `v0.1.0` and `v0.2.0` are available; three blocking-mode demo
+  scenarios and the packaged audit-mode scenario are verified.
+- The Marketplace listing is live; view and installation counts are not yet
+  available in the local venture state.
 - GitHub's 3,000-file pull-request API ceiling fails closed.
 - The repository-local policy can be changed within a pull request.
 - Paid policy locking, checkout, licensing, analytics, and vendor services are

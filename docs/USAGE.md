@@ -7,9 +7,10 @@
 - Leserechte für Repository-Inhalte und Pull-Request-Metadaten.
 - Für die lokale Entwicklung Node.js 24 und npm.
 
-Die Action ist für die Node-24-Action-Runtime (`node24`) gebündelt. Sie wurde
-lokal, in einem öffentlichen Demo-Repository und im GitHub Marketplace-Release
-`v0.1.0` validiert.
+Die Action ist für die Node-24-Action-Runtime (`node24`) gebündelt. Version
+0.1.0 wurde lokal, in einem öffentlichen Demo-Repository und im GitHub
+Marketplace validiert. Version 0.2.0 ergänzt den lokal und im gebündelten
+End-to-End-Test validierten Audit-Modus.
 
 ## Workflow
 
@@ -36,6 +37,7 @@ jobs:
         with:
           github-token: ${{ github.token }}
           policy-file: .github/docs-impact.yml
+          enforcement: audit
 ```
 
 `pull_request_target` darf nicht verwendet werden. Die Action soll mit dem
@@ -47,12 +49,26 @@ Code und der Policy des Pull Requests unter minimalen Leserechten laufen.
 | --- | --- | --- | --- | --- |
 | `github-token` | String | ja | – | Lesender GitHub-Token zum Abruf der geänderten Dateinamen. |
 | `policy-file` | String | nein | `.github/docs-impact.yml` | Repository-relativer Pfad zur Policy. |
+| `enforcement` | String | nein | `block` | `audit` berichtet Verletzungen ohne Step-Fehler; `block` markiert den Step bei Verletzungen als fehlgeschlagen. |
 
 | Ausgabe | Bedeutung |
 | --- | --- |
 | `result` | `pass` oder `fail`. |
 | `violations-count` | Anzahl der verletzten Regeln als Dezimalzahl. |
 | `report` | Deterministischer Markdown-Bericht ohne Entscheidungstexte oder Quellcode. |
+
+## Audit-First-Rollout
+
+Für einen neuen Pilot empfiehlt sich zunächst `enforcement: audit`. Eine
+Policy-Verletzung setzt weiterhin `result=fail`, veröffentlicht
+`violations-count` und schreibt einen mit `AUDIT` gekennzeichneten Bericht. Der
+Workflow-Step endet jedoch erfolgreich, sodass die Policy ohne Merge-Risiko
+kalibriert werden kann.
+
+Nach der Beobachtungsphase wird bewusst auf `enforcement: block` umgestellt.
+Dann veröffentlicht die Action dieselbe Evidenz und markiert den Step bei einer
+Verletzung als fehlgeschlagen. Unbekannte Enforcement-Werte sowie Policy-,
+Ereignis- und API-Fehler schlagen unabhängig vom Modus sicher fehl.
 
 ## Policy-Schema
 
@@ -120,12 +136,14 @@ Schlüssel führen zu einem Fehler.
 
 ## Fehler beheben
 
-Bei einer Regelverletzung setzt die Action `result=fail`, veröffentlicht zuerst
-den Bericht und markiert danach den Step als fehlgeschlagen. Der Bericht nennt
-Regel, Auslöser, erwartete Pfade und Ergebnis, aber nie den Begründungstext.
-Zum Beheben entweder eine passende Datei ändern oder eine konkrete Begründung
-für den verlangten Entscheidungsschlüssel ergänzen. Konfigurations- und
-API-Fehler werden bereinigt und schließen die Prüfung sicher mit Fehler.
+Bei einer Regelverletzung setzt die Action immer `result=fail` und
+veröffentlicht zuerst den Bericht. Im Standardmodus `block` markiert sie danach
+den Step als fehlgeschlagen; im Modus `audit` bleibt der Step erfolgreich. Der
+Bericht nennt Regel, Auslöser, erwartete Pfade und Ergebnis, aber nie den
+Begründungstext. Zum Beheben entweder eine passende Datei ändern oder eine
+konkrete Begründung für den verlangten Entscheidungsschlüssel ergänzen.
+Konfigurations- und API-Fehler werden bereinigt und schließen die Prüfung in
+beiden Modi sicher mit Fehler.
 
 ## Sicherheits- und Datenschutzgrenzen
 
@@ -145,8 +163,9 @@ API-Fehler werden bereinigt und schließen die Prüfung sicher mit Fehler.
 - Die lokale Policy liegt im geprüften Repository und kann in einem Pull
   Request mitgeändert werden. Bezahltes Rule-Locking ist noch nicht
   implementiert.
-- Die Installation aus dem GitHub Marketplace und drei Szenarien im
-  öffentlichen Demo-Repository wurden getestet.
+- Die Blocking-Szenarien wurden zusätzlich in einem öffentlichen
+  Demo-Repository getestet; der Audit-Modus wird durch den gebündelten
+  End-to-End-Test abgedeckt.
 - Checkout, Lizenzvalidierung, Pro-/Team-Funktionen und externe Analytics sind
   noch nicht implementiert.
 
@@ -162,5 +181,5 @@ npm run check
 
 `src/` ist die maßgebliche Quelle. `dist/` wird mit `npm run build` erzeugt und
 für die direkte Ausführung als JavaScript Action mit versioniert.
-`npm run check` baut das Bundle vor den Tests und startet es zusätzlich in zwei
+`npm run check` baut das Bundle vor den Tests und startet es zusätzlich in drei
 lokalen End-to-End-Szenarien gegen einen kontrollierten GitHub-API-Ersatz.

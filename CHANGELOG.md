@@ -2,6 +2,16 @@
 
 All notable changes to Docs Impact Gate will be recorded in this file.
 
+## [Unreleased]
+
+## [0.2.0] - 2026-08-20
+
+### Added
+
+- Optional `enforcement: audit` pilot mode that reports policy violations
+  without failing the workflow step; `block` remains the default.
+- Strict enforcement-input validation before any GitHub API client is created.
+
 ## [0.1.0] - 2026-08-20
 
 ### Added
@@ -17,5 +27,3 @@ All notable changes to Docs Impact Gate will be recorded in this file.
 Public pre-release package validated in `FastPhive/docs-impact-gate-demo` with
 passing, failing, and explicit-decision pull-request scenarios and published as
 the initial GitHub Marketplace version.
-
-## [Unreleased]

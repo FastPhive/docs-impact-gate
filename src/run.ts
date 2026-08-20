@@ -1,4 +1,5 @@
 import { parseDecisionBlock } from './decisions.js';
+import type { EnforcementMode } from './domain.js';
 import { evaluatePolicy } from './evaluate.js';
 import {
   readPullRequestData,
@@ -86,6 +87,12 @@ export async function runAction(dependencies: RunDependencies): Promise<void> {
 
     const policyFile =
       dependencies.core.getInput('policy-file') || '.github/docs-impact.yml';
+    const enforcementInput =
+      dependencies.core.getInput('enforcement') || 'block';
+    if (enforcementInput !== 'audit' && enforcementInput !== 'block') {
+      throw new Error('The enforcement input must be either audit or block');
+    }
+    const enforcement: EnforcementMode = enforcementInput;
     const workspace = dependencies.getWorkspace();
     if (!workspace) {
       throw new Error('GITHUB_WORKSPACE is unavailable');
@@ -100,7 +107,7 @@ export async function runAction(dependencies: RunDependencies): Promise<void> {
       pullRequest.changedFiles,
       decisions,
     );
-    const report = renderReport(evaluation);
+    const report = renderReport(evaluation, enforcement);
 
     await dependencies.writeSummary(report);
     dependencies.core.setOutput('result', evaluation.passed ? 'pass' : 'fail');
@@ -110,7 +117,7 @@ export async function runAction(dependencies: RunDependencies): Promise<void> {
     );
     dependencies.core.setOutput('report', report);
 
-    if (!evaluation.passed) {
+    if (!evaluation.passed && enforcement === 'block') {
       dependencies.core.setFailed(
         `Docs Impact Gate found ${evaluation.violations.length} violation(s).`,
       );

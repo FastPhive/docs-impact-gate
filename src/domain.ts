@@ -16,6 +16,7 @@ export interface Policy {
 }
 
 export type DecisionMap = Partial<Record<DecisionKey, string>>;
+export type EnforcementMode = 'audit' | 'block';
 
 export interface PullRequestData {
   owner: string;

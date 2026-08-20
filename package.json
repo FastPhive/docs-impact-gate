@@ -1,6 +1,6 @@
 {
   "name": "docs-impact-gate",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "type": "module",
   "description": "Deterministic GitHub pull-request gate for documentation and release decisions.",

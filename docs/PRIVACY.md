@@ -2,8 +2,9 @@
 
 Stand: 20. August 2026
 
-Diese Information beschreibt den kostenlosen Kern von Docs Impact Gate in der
-öffentlichen Version 0.1.0. Sie ist keine Rechtsberatung.
+Diese Information beschreibt den kostenlosen Kern von Docs Impact Gate in den
+öffentlichen Versionen 0.1.0 und 0.2.0. Sie ist keine Rechtsberatung. Der
+Audit-Modus ändert den beschriebenen Datenfluss und die Datenspeicherung nicht.
 
 ## Verarbeitete Daten
 

@@ -45,6 +45,7 @@ async function readRequestBody(request: IncomingMessage): Promise<string> {
 async function runBundle(
   changedFiles: Array<Record<string, unknown>>,
   pullRequestBody: string,
+  enforcement = 'block',
 ): Promise<BundleResult> {
   const temporaryRoot = await mkdtemp(join(tmpdir(), 'docs-impact-bundle-'));
   const outputPath = join(temporaryRoot, 'output.txt');
@@ -102,6 +103,7 @@ async function runBundle(
         GITHUB_WORKSPACE: temporaryRoot,
         'INPUT_GITHUB-TOKEN': 'local-bundle-test-token',
         'INPUT_POLICY-FILE': 'policy.yml',
+        INPUT_ENFORCEMENT: enforcement,
       },
       stdio: ['ignore', 'pipe', 'pipe'],
     });
@@ -204,6 +206,25 @@ test(
     assert.match(result.output, /result<<[^\n]+\nfail\n/u);
     assert.match(result.output, /violations-count<<[^\n]+\n1\n/u);
     assert.match(result.summary, /FAIL.*1 violation/u);
+    assert.match(result.summary, /user-docs/u);
+    assert.equal(result.stderr.includes('PRIVATE SOURCE PATCH'), false);
+  },
+);
+
+test(
+  'packaged action audits a violation without failing the step',
+  { timeout: 10_000 },
+  async () => {
+    const result = await runBundle(
+      [apiFile('src/ui/button.ts', 'PRIVATE SOURCE PATCH')],
+      'No decision block.',
+      'audit',
+    );
+
+    assert.equal(result.exitCode, 0);
+    assert.match(result.output, /result<<[^\n]+\nfail\n/u);
+    assert.match(result.output, /violations-count<<[^\n]+\n1\n/u);
+    assert.match(result.summary, /AUDIT.*1 violation/u);
     assert.match(result.summary, /user-docs/u);
     assert.equal(result.stderr.includes('PRIVATE SOURCE PATCH'), false);
   },

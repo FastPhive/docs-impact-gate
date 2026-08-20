@@ -2,7 +2,8 @@
 
 ## Supported versions
 
-Docs Impact Gate `v0.1.0` is the current supported GitHub Marketplace release.
+Docs Impact Gate `v0.2.0` is the current supported GitHub Marketplace release.
+Version `v0.1.0` remains available as the initial blocking-only release.
 
 ## Reporting a vulnerability
 

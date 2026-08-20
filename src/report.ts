@@ -1,4 +1,4 @@
-import type { Evaluation } from './domain.js';
+import type { EnforcementMode, Evaluation } from './domain.js';
 
 const fieldLimit = 300;
 const reportLimit = 50_000;
@@ -52,13 +52,18 @@ function capReport(report: string): string {
   return `${report.slice(0, reportLimit - truncationNotice.length)}${truncationNotice}`;
 }
 
-export function renderReport(evaluation: Evaluation): string {
+export function renderReport(
+  evaluation: Evaluation,
+  enforcement: EnforcementMode = 'block',
+): string {
   const lines = [
     '# Docs Impact Gate',
     '',
     evaluation.passed
       ? `**PASS — ${evaluation.violations.length} violations.**`
-      : `**FAIL — ${evaluation.violations.length} violation(s).**`,
+      : enforcement === 'audit'
+        ? `**AUDIT — ${evaluation.violations.length} violation(s) found; the step was not blocked.**`
+        : `**FAIL — ${evaluation.violations.length} violation(s).**`,
   ];
   const triggered = evaluation.results.filter(
     (result) => result.outcome !== 'not-triggered',

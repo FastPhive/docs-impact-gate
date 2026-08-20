@@ -10,6 +10,10 @@ inputs:
     description: Repository-relative path to the Docs Impact Gate policy.
     required: false
     default: .github/docs-impact.yml
+  enforcement:
+    description: Choose audit to report violations without blocking, or block to fail the step.
+    required: false
+    default: block
 
 outputs:
   result:

@@ -15,6 +15,7 @@ interface Harness {
 function createHarness(
   filenames: string[],
   body: string | null = null,
+  inputOverrides: Record<string, string> = {},
 ): Harness {
   const outputs = new Map<string, unknown>();
   const failures: string[] = [];
@@ -23,6 +24,7 @@ function createHarness(
   const inputs: Record<string, string> = {
     'github-token': 'test-token-value',
     'policy-file': 'tests/fixtures/valid-policy.yml',
+    ...inputOverrides,
   };
   const core: CoreApi = {
     getInput: (name) => {
@@ -94,10 +96,42 @@ test('publishes violation details before marking the action failed', async () =>
   ]);
 });
 
+test('audit enforcement reports violations without failing the step', async () => {
+  const harness = createHarness(['src/ui/button.ts'], null, {
+    enforcement: 'audit',
+  });
+
+  await runAction(harness.dependencies);
+
+  assert.equal(harness.outputs.get('result'), 'fail');
+  assert.equal(harness.outputs.get('violations-count'), '1');
+  assert.match(String(harness.outputs.get('report')), /AUDIT.*1 violation/iu);
+  assert.match(harness.summaries[0] ?? '', /AUDIT.*1 violation/iu);
+  assert.equal(harness.failures.length, 0);
+});
+
+test('rejects an unknown enforcement mode before creating a client', async () => {
+  const harness = createHarness(['src/ui/button.ts'], null, {
+    enforcement: 'warn',
+  });
+
+  await runAction(harness.dependencies);
+
+  assert.deepEqual(harness.failures, [
+    'Docs Impact Gate could not evaluate the pull request: The enforcement input must be either audit or block',
+  ]);
+  assert.equal(harness.outputs.size, 0);
+  assert.equal(harness.summaries.length, 0);
+  assert.equal(harness.events.includes('client'), false);
+});
+
 test('reports an actionable sanitized policy error', async () => {
   const harness = createHarness(['src/ui/button.ts']);
-  harness.dependencies.core.getInput = (name) =>
-    name === 'github-token' ? 'test-token-value' : 'missing-policy.yml';
+  harness.dependencies.core.getInput = (name) => {
+    if (name === 'github-token') return 'test-token-value';
+    if (name === 'policy-file') return 'missing-policy.yml';
+    return '';
+  };
 
   await runAction(harness.dependencies);
 
