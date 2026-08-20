@@ -14,9 +14,9 @@ End-to-End-Test validierten Audit-Modus.
 
 ## Workflow
 
-Nach der Einrichtung eines Publisher-Repositorys muss die Action auf einen
-vollständigen Commit-SHA gepinnt werden. Platzhalter in diesem Beispiel dürfen
-nicht unverändert übernommen werden:
+Das folgende Beispiel ist unmittelbar nutzbar. Es pinnt Checkout und Docs
+Impact Gate auf die verifizierten vollständigen Commit-SHAs; der Produkt-Pin
+entspricht Marketplace-Version 0.2.0:
 
 ```yaml
 name: Docs Impact Gate
@@ -32,13 +32,18 @@ jobs:
   docs-impact:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@<full-commit-sha>
-      - uses: <publisher>/<repository>@<full-commit-sha>
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: FastPhive/docs-impact-gate@6683d10b1aa4768e433bc5ba2498f1f0b9477c70 # v0.2.0
         with:
           github-token: ${{ github.token }}
           policy-file: .github/docs-impact.yml
           enforcement: audit
 ```
+
+Bei einem späteren Upgrade muss der Produkt-Pin bewusst auf den vollständigen
+Commit-SHA des geprüften Releases aktualisiert werden.
 
 `pull_request_target` darf nicht verwendet werden. Die Action soll mit dem
 Code und der Policy des Pull Requests unter minimalen Leserechten laufen.
