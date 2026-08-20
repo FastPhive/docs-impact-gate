@@ -1,0 +1,52 @@
+name: Audit pilot feedback
+description: Share opt-in feedback from a Docs Impact Gate audit rollout.
+title: '[Audit pilot] '
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for testing Docs Impact Gate in audit mode.
+
+        Do not include tokens, secrets, private repository content, personal contact details, or security vulnerabilities. Report vulnerabilities through the private security channel instead.
+  - type: input
+    id: repository
+    attributes:
+      label: Repository reference (optional)
+      description: Share only a public repository URL or one you are authorized to identify publicly.
+      placeholder: https://github.com/owner/repository
+    validations:
+      required: false
+  - type: dropdown
+    id: check-count
+    attributes:
+      label: Pull-request checks observed
+      description: Approximately how many real pull-request checks ran during the pilot?
+      options:
+        - '1'
+        - 2-5
+        - 6-10
+        - 11 or more
+    validations:
+      required: true
+  - type: textarea
+    id: observations
+    attributes:
+      label: What happened?
+      description: Describe setup effort, useful findings, and missing rules without sharing private content.
+      placeholder: Setup took about ...; the audit report helped us ...
+    validations:
+      required: true
+  - type: textarea
+    id: false-positives
+    attributes:
+      label: False positives or unclear guidance (optional)
+      description: Describe the rule shape and outcome without pasting source code or private paths.
+    validations:
+      required: false
+  - type: checkboxes
+    id: authorization
+    attributes:
+      label: Authorization and privacy
+      options:
+        - label: I am authorized to share this feedback publicly and have excluded secrets, private content, and personal contact details.
+          required: true
