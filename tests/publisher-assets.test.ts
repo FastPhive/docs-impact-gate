@@ -4,6 +4,9 @@ import test from 'node:test';
 
 import { parse } from 'yaml';
 
+import type { Evaluation, PolicyRule, RuleResult } from '../src/domain.js';
+import { renderReport } from '../src/report.js';
+
 function readYaml(path: string): Record<string, unknown> {
   const parsed: unknown = parse(readFileSync(path, 'utf8'));
   assert.ok(parsed && typeof parsed === 'object' && !Array.isArray(parsed));
@@ -158,4 +161,34 @@ test('publisher root contains exactly one action metadata file', () => {
   );
 
   assert.deepEqual(metadataFiles, ['action.yml']);
+});
+
+test('Marketplace README audit example matches the real report renderer', () => {
+  const rule: PolicyRule = {
+    id: 'production-docs',
+    description:
+      'Production changes require user or architecture documentation.',
+    ifChanged: ['src/**'],
+    requireAny: ['docs/USAGE.md', 'docs/ARCHITECTURE.md'],
+    decision: 'docs',
+    minReasonLength: 15,
+  };
+  const result: RuleResult = {
+    rule,
+    outcome: 'violation',
+    triggeringFiles: ['src/api/client.ts'],
+    satisfyingFiles: [],
+  };
+  const evaluation: Evaluation = {
+    passed: false,
+    results: [result],
+    violations: [result],
+  };
+  const readme = readFileSync('README.md', 'utf8');
+  const example = readme.match(
+    /## See it in action[\s\S]*?```text\n([\s\S]*?)\n```/u,
+  );
+
+  assert.ok(example, 'expected a text report under See it in action');
+  assert.equal(example[1], renderReport(evaluation, 'audit'));
 });

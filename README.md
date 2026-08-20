@@ -24,6 +24,36 @@ uploading source code or full diffs to a vendor service.
 - Omits decision reasons, source patches, and raw pull-request bodies from
   reports.
 
+## See it in action
+
+When a production file changes without a required documentation file or an
+explicit decision, `enforcement: audit` produces this deterministic Action
+Summary while leaving the workflow step non-blocking:
+
+```text
+# Docs Impact Gate
+
+**AUDIT — 1 violation(s) found; the step was not blocked.**
+
+## Rule: production-docs
+
+- Description: Production changes require user or architecture documentation.
+- Trigger patterns: src/**
+- Triggering files: src/api/client.ts
+- Required paths (any): docs/USAGE.md, docs/ARCHITECTURE.md
+- Satisfying files: none
+- Decision: docs (minimum 15 characters)
+- Outcome: violation
+- Repair: Add at least one matching required path or provide a sufficiently detailed reason in the `docs-impact` block.
+```
+
+Inspect the publisher-owned public scenarios: a
+[documentation update passes](https://github.com/FastPhive/docs-impact-gate-demo/pull/1),
+a [missing decision blocks](https://github.com/FastPhive/docs-impact-gate-demo/pull/2),
+and an
+[explicit decision passes](https://github.com/FastPhive/docs-impact-gate-demo/pull/3).
+These scenarios verify behavior; they are not evidence of external adoption.
+
 ## Join the audit pilot
 
 Try `enforcement: audit` on real pull requests without blocking merges, then

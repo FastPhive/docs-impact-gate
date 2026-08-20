@@ -13,6 +13,8 @@ All notable changes to Docs Impact Gate will be recorded in this file.
 
 - Marketplace-facing setup examples now use the verified immutable v0.2.0
   commit pin directly instead of unresolved publisher and SHA placeholders.
+- The Marketplace README now shows a renderer-synchronized audit report and
+  links to the three publisher-owned public demo scenarios.
 
 ## [0.2.0] - 2026-08-20
 
