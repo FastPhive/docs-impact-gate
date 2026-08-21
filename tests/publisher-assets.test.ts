@@ -122,6 +122,7 @@ test('audit pilot intake keeps repository disclosure optional and requires autho
     [...fields.keys()],
     [
       'repository',
+      'discovery-source',
       'check-count',
       'observations',
       'false-positives',
@@ -139,6 +140,28 @@ test('audit pilot intake keeps repository disclosure optional and requires autho
   assert.match(
     String(repositoryAttributes.description),
     /public.*authorized|authorized.*public/iu,
+  );
+
+  const discoverySource = fields.get('discovery-source');
+  assert.equal(discoverySource?.type, 'dropdown');
+  assert.deepEqual(discoverySource?.validations, { required: false });
+  const discoveryAttributes = discoverySource?.attributes as Record<
+    string,
+    unknown
+  >;
+  assert.deepEqual(discoveryAttributes.options, [
+    'GitHub Marketplace',
+    'GitHub repository',
+    'LinkedIn',
+    'DEV Community',
+    'Hacker News',
+    'Reddit',
+    'Other',
+  ]);
+  assert.match(String(discoveryAttributes.description), /optional/iu);
+  assert.doesNotMatch(
+    String(discoveryAttributes.description),
+    /email|name|phone|contact/iu,
   );
 
   const authorization = fields.get('authorization');

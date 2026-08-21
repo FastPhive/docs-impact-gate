@@ -11,6 +11,8 @@ All notable changes to Docs Impact Gate will be recorded in this file.
 
 ### Changed
 
+- The opt-in pilot form now supports voluntary, coarse source attribution
+  without requesting names, email addresses, or other contact details.
 - Marketplace-facing setup examples now use the verified immutable v0.2.0
   commit pin directly instead of unresolved publisher and SHA placeholders.
 - The Marketplace README now shows a renderer-synchronized audit report and
