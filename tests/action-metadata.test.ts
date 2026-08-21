@@ -32,3 +32,17 @@ test('action metadata exposes the minimal Node 24 read-only contract', () => {
   ]);
   assert.equal(existsSync('.github/docs-impact.yml'), true);
 });
+
+test('action metadata states the high-intent audit-first positioning', () => {
+  const metadata = parse(readFileSync('action.yml', 'utf8')) as Record<
+    string,
+    unknown
+  >;
+  const description = String(metadata.description);
+
+  assert.equal(
+    description,
+    'Deterministic PR policy gate for documentation, changelog, and version decisions — audit-first, no source upload or LLM.',
+  );
+  assert.ok(description.length <= 125);
+});

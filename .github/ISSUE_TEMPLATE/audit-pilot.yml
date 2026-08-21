@@ -17,6 +17,21 @@ body:
     validations:
       required: false
   - type: dropdown
+    id: discovery-source
+    attributes:
+      label: How did you find Docs Impact Gate? (optional)
+      description: Optional, coarse campaign attribution for aggregate pilot reporting.
+      options:
+        - GitHub Marketplace
+        - GitHub repository
+        - LinkedIn
+        - DEV Community
+        - Hacker News
+        - Reddit
+        - Other
+    validations:
+      required: false
+  - type: dropdown
     id: check-count
     attributes:
       label: Pull-request checks observed

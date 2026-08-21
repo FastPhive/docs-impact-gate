@@ -1,5 +1,5 @@
 name: Docs Impact Gate
-description: Enforce explicit documentation, changelog, and version decisions on pull requests.
+description: Deterministic PR policy gate for documentation, changelog, and version decisions — audit-first, no source upload or LLM.
 author: Docs Impact Gate
 
 inputs:
