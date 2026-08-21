@@ -248,3 +248,42 @@ test('Marketplace README audit example matches the real report renderer', () => 
   assert.ok(example, 'expected a text report under See it in action');
   assert.equal(example[1], renderReport(evaluation, 'audit'));
 });
+
+test('Marketplace README leads with a visual and a 60-second audit setup', () => {
+  const readme = readFileSync('README.md', 'utf8');
+  const quickStartIndex = readme.indexOf('## Quick Start in 60 seconds');
+  const whyIndex = readme.indexOf('## Why');
+  const quickStart = readme.match(
+    /## Quick Start in 60 seconds\n([\s\S]*?)(?=\n## )/u,
+  );
+
+  assert.match(
+    readme,
+    /!\[Docs Impact Gate audit-first pull request policy gate\]\(marketing\/assets\/docs-impact-gate-social-preview\.png\)/u,
+  );
+  assert.ok(quickStartIndex > 0, 'expected a 60-second quick start');
+  assert.ok(whyIndex > quickStartIndex, 'expected Quick Start before Why');
+  assert.ok(quickStart, 'expected Quick Start content');
+  const quickStartCopy = quickStart[1];
+  assert.ok(quickStartCopy, 'expected copy below the Quick Start heading');
+  assert.match(quickStartCopy, /\.github\/docs-impact\.yml/u);
+  assert.match(quickStartCopy, /enforcement: audit/u);
+  assert.match(
+    quickStartCopy,
+    /FastPhive\/docs-impact-gate@6683d10b1aa4768e433bc5ba2498f1f0b9477c70/u,
+  );
+});
+
+test('social preview is a GitHub-ready 1280 by 640 PNG', () => {
+  const path = 'marketing/assets/docs-impact-gate-social-preview.png';
+  assert.equal(existsSync(path), true, 'expected the social preview asset');
+
+  const image = readFileSync(path);
+  assert.deepEqual(
+    [...image.subarray(0, 8)],
+    [137, 80, 78, 71, 13, 10, 26, 10],
+  );
+  assert.equal(image.readUInt32BE(16), 1280);
+  assert.equal(image.readUInt32BE(20), 640);
+  assert.ok(image.byteLength < 1_000_000, 'expected a sub-1 MB preview');
+});

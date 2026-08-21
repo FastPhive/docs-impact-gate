@@ -1,11 +1,72 @@
 # Docs Impact Gate
 
+![Docs Impact Gate audit-first pull request policy gate](marketing/assets/docs-impact-gate-social-preview.png)
+
+Deterministic pull-request policy for documentation, changelog, and version
+decisions. Start in non-blocking audit mode, keep source code inside the GitHub
+Actions runner, and use repository-owned YAML instead of an external service or
+LLM.
+
 > `v0.2.0` is the current GitHub Marketplace release. It adds an audit-first
 > rollout mode to the deterministic blocking behavior introduced in `v0.1.0`.
 
-Docs Impact Gate requires an explicit documentation, changelog, and version
-decision when relevant files change in a pull request. It uses repository-owned
-YAML rules and runs entirely inside the GitHub Actions runner.
+## Quick Start in 60 seconds
+
+Add `.github/docs-impact.yml`:
+
+```yaml
+version: 1
+rules:
+  - id: production-docs
+    description: Production changes require user or architecture documentation.
+    if_changed:
+      - src/**
+    require_any:
+      - docs/USAGE.md
+      - docs/ARCHITECTURE.md
+    decision: docs
+    min_reason_length: 15
+```
+
+Add `.github/workflows/docs-impact.yml`. Both third-party Actions are pinned to
+verified immutable commits:
+
+```yaml
+name: Docs Impact Gate
+
+on:
+  pull_request:
+
+permissions:
+  contents: read
+  pull-requests: read
+
+jobs:
+  docs-impact:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: FastPhive/docs-impact-gate@6683d10b1aa4768e433bc5ba2498f1f0b9477c70 # v0.2.0
+        with:
+          github-token: ${{ github.token }}
+          policy-file: .github/docs-impact.yml
+          enforcement: audit
+```
+
+Push both files. The first violating pull request gets a non-blocking Action
+Summary. Calibrate the policy, then switch `enforcement` to `block` when the
+repository is ready.
+
+If no required file changes, include exactly one block in the pull-request
+body:
+
+```docs-impact
+docs: Internal refactor only; user behavior remains unchanged.
+changelog: No release note because behavior remains unchanged.
+version: No package API or distributed artifact changed.
+```
 
 ## Why
 
@@ -66,60 +127,6 @@ The form asks for aggregate feedback without separate contact details; a
 repository reference is optional and must be public or explicitly authorized
 for disclosure. Never include secrets, private repository content, personal
 contact details, or vulnerability reports.
-
-## Usage
-
-Add `.github/docs-impact.yml`:
-
-```yaml
-version: 1
-rules:
-  - id: production-docs
-    description: Production changes require user or architecture documentation.
-    if_changed:
-      - src/**
-    require_any:
-      - docs/USAGE.md
-      - docs/ARCHITECTURE.md
-    decision: docs
-    min_reason_length: 15
-```
-
-Add this copy-ready `pull_request` workflow. Both third-party Actions are
-pinned to verified immutable commits:
-
-```yaml
-name: Docs Impact Gate
-
-on:
-  pull_request:
-
-permissions:
-  contents: read
-  pull-requests: read
-
-jobs:
-  docs-impact:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          persist-credentials: false
-      - uses: FastPhive/docs-impact-gate@6683d10b1aa4768e433bc5ba2498f1f0b9477c70 # v0.2.0
-        with:
-          github-token: ${{ github.token }}
-          policy-file: .github/docs-impact.yml
-          enforcement: audit
-```
-
-If no required file changes, include exactly one block in the pull-request
-body:
-
-```docs-impact
-docs: Internal refactor only; user behavior remains unchanged.
-changelog: No release note because behavior remains unchanged.
-version: No package API or distributed artifact changed.
-```
 
 ## Inputs and outputs
 

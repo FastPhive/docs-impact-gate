@@ -8,11 +8,15 @@ All notable changes to Docs Impact Gate will be recorded in this file.
 
 - Read-only self-dogfood checks in audit mode for publisher pull requests.
 - A privacy-safe, opt-in GitHub Issue Form for audit-pilot feedback.
+- A branded 1280×640 repository preview that visualizes the real audit-first
+  report scenario.
 
 ### Changed
 
 - The opt-in pilot form now supports voluntary, coarse source attribution
   without requesting names, email addresses, or other contact details.
+- The Marketplace README now leads with a 60-second audit-mode setup and the
+  Action metadata states the deterministic, privacy-preserving positioning.
 - Marketplace-facing setup examples now use the verified immutable v0.2.0
   commit pin directly instead of unresolved publisher and SHA placeholders.
 - The Marketplace README now shows a renderer-synchronized audit report and
